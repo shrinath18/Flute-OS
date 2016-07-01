@@ -1,21 +1,26 @@
 
+//This function is called from boot.s
 int main(struct multiboot *mboot_ptr)
 {
     
-    print("Hello World");
+    print("Hello World!",7,7);
     return 0xDEADBABA;
 }
 
-void print(char * message){
-    unsigned short * where_to_print = (unsigned short *)0xB8000 + 323;//VGA memory starts at 0xB8000 
+void print(char * message,int start_x,int start_y){
+    int index = start_x*80 + start_y; 
+    /*
+    VGA memory starts at 0xB8000 and writing into this location will print on the screen
+   */
+    unsigned short * start_position = (unsigned short *)0xB8000 + index; 
     unsigned short attribute = 14;
     unsigned short character = message[0];
     int i = 1;
     while(character != '\0'){
-     *where_to_print = character | (attribute << 8);
+     *start_position = character | (attribute << 8);
      character = message[i];
      i++;
-     where_to_print += 1;
+     start_position += 1;
     }
 
 }
